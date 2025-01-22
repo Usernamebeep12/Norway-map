@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Norway Map with Locations</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,17 +29,14 @@
     <p>Click on a marker to open the location in Google Search.</p>
     <div id="map"></div>
 
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         const locations = [
-            // Original locations
             { name: "Setesdal", coords: [59.0, 7.8], search: "Setesdal Norway", tourism: 4, accessibility: 6 },
             { name: "Dalane Hei", coords: [58.4, 6.2], search: "Dalane Hei Norway", tourism: 3, accessibility: 5 },
             { name: "Blådalen", coords: [60.1, 6.3], search: "Blådalen Norway", tourism: 3, accessibility: 4 },
             { name: "Hjørundfjord", coords: [62.2, 6.5], search: "Hjørundfjord Norway", tourism: 5, accessibility: 7 },
             { name: "Frafjord", coords: [58.9, 6.3], search: "Frafjord Norway", tourism: 4, accessibility: 6 },
-            // ... Other original locations
-
-            // New locations (Bergen and Stavanger region)
             { name: "Preikestolen", coords: [58.9866, 6.1628], search: "Preikestolen Norway", tourism: 10, accessibility: 7 },
             { name: "Kjeragbolten", coords: [59.0438, 6.5803], search: "Kjeragbolten Norway", tourism: 9, accessibility: 5 },
             { name: "Ulriken", coords: [60.3707, 5.3917], search: "Ulriken Norway", tourism: 8, accessibility: 8 },
@@ -51,37 +49,26 @@
             { name: "Vøringsfossen", coords: [60.4237, 7.2503], search: "Vøringsfossen Norway", tourism: 9, accessibility: 7 }
         ];
 
-        function initMap() {
-            const map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 5,
-                center: { lat: 60.472, lng: 8.4689 } // Center of Norway
-            });
+        // Initialize map
+        const map = L.map('map').setView([60.472, 8.4689], 5);  // Center of Norway
 
-            locations.forEach(location => {
-                const marker = new google.maps.Marker({
-                    position: { lat: location.coords[0], lng: location.coords[1] },
-                    map: map,
-                    title: `${location.name} (Tourism: ${location.tourism}/10, Accessibility: ${location.accessibility}/10)`
-                });
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-                const infoWindow = new google.maps.InfoWindow({
-                    content: `
-                        <div class="tooltip">
-                            <h3>${location.name}</h3>
-                            <p>Tourism: ${location.tourism}/10</p>
-                            <p>Accessibility: ${location.accessibility}/10</p>
-                            <a href="https://www.google.com/search?q=${encodeURIComponent(location.search)}" target="_blank">More Info</a>
-                        </div>
-                    `
-                });
-
-                marker.addListener("click", () => {
-                    infoWindow.open(map, marker);
-                });
-            });
-        }
+        // Add markers and popups for each location
+        locations.forEach(location => {
+            const marker = L.marker(location.coords).addTo(map);
+            
+            // Popup content
+            marker.bindPopup(`
+                <strong>${location.name}</strong><br>
+                Tourism: ${location.tourism}/10<br>
+                Accessibility: ${location.accessibility}/10<br>
+                <a href="https://www.google.com/search?q=${encodeURIComponent(location.search)}" target="_blank">More Info</a>
+            `);
+        });
     </script>
-
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap"></script>
 </body>
 </html>
