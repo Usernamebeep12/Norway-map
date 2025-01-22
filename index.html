@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Norway Map with Locations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        #map {
+            width: 100%;
+            height: 600px;
+        }
+        .tooltip {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Norway Map with Locations</h1>
+    <p>Click on a marker to open the location in Google Search.</p>
+    <div id="map"></div>
+
+    <script>
+        const locations = [
+            // Original locations
+            { name: "Setesdal", coords: [59.0, 7.8], search: "Setesdal Norway", tourism: 4, accessibility: 6 },
+            { name: "Dalane Hei", coords: [58.4, 6.2], search: "Dalane Hei Norway", tourism: 3, accessibility: 5 },
+            { name: "Blådalen", coords: [60.1, 6.3], search: "Blådalen Norway", tourism: 3, accessibility: 4 },
+            { name: "Hjørundfjord", coords: [62.2, 6.5], search: "Hjørundfjord Norway", tourism: 5, accessibility: 7 },
+            { name: "Frafjord", coords: [58.9, 6.3], search: "Frafjord Norway", tourism: 4, accessibility: 6 },
+            // ... Other original locations
+
+            // New locations (Bergen and Stavanger region)
+            { name: "Preikestolen", coords: [58.9866, 6.1628], search: "Preikestolen Norway", tourism: 10, accessibility: 7 },
+            { name: "Kjeragbolten", coords: [59.0438, 6.5803], search: "Kjeragbolten Norway", tourism: 9, accessibility: 5 },
+            { name: "Ulriken", coords: [60.3707, 5.3917], search: "Ulriken Norway", tourism: 8, accessibility: 8 },
+            { name: "Fløyen", coords: [60.3971, 5.3452], search: "Fløyen Norway", tourism: 8, accessibility: 9 },
+            { name: "Lindesnes Fyr", coords: [57.9814, 7.0474], search: "Lindesnes Fyr Norway", tourism: 7, accessibility: 6 },
+            { name: "Ryfylke Scenic Route", coords: [59.015, 6.682], search: "Ryfylke Scenic Route Norway", tourism: 6, accessibility: 7 },
+            { name: "Låtefossen Waterfall", coords: [59.933, 6.587], search: "Låtefossen Waterfall Norway", tourism: 8, accessibility: 7 },
+            { name: "Bøyabreen Glacier", coords: [61.5195, 6.8968], search: "Bøyabreen Glacier Norway", tourism: 5, accessibility: 4 },
+            { name: "Steinsdalsfossen", coords: [60.3715, 6.1096], search: "Steinsdalsfossen Norway", tourism: 7, accessibility: 8 },
+            { name: "Vøringsfossen", coords: [60.4237, 7.2503], search: "Vøringsfossen Norway", tourism: 9, accessibility: 7 }
+        ];
+
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 5,
+                center: { lat: 60.472, lng: 8.4689 } // Center of Norway
+            });
+
+            locations.forEach(location => {
+                const marker = new google.maps.Marker({
+                    position: { lat: location.coords[0], lng: location.coords[1] },
+                    map: map,
+                    title: `${location.name} (Tourism: ${location.tourism}/10, Accessibility: ${location.accessibility}/10)`
+                });
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `
+                        <div class="tooltip">
+                            <h3>${location.name}</h3>
+                            <p>Tourism: ${location.tourism}/10</p>
+                            <p>Accessibility: ${location.accessibility}/10</p>
+                            <a href="https://www.google.com/search?q=${encodeURIComponent(location.search)}" target="_blank">More Info</a>
+                        </div>
+                    `
+                });
+
+                marker.addListener("click", () => {
+                    infoWindow.open(map, marker);
+                });
+            });
+        }
+    </script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap"></script>
+</body>
+</html>
